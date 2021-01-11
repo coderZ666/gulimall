@@ -1,15 +1,13 @@
 package com.zwx.gulimall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.zwx.common.to.SkuHasStockTo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.zwx.gulimall.ware.entity.WareSkuEntity;
 import com.zwx.gulimall.ware.service.WareSkuService;
@@ -32,7 +30,21 @@ public class WareSkuController {
     private WareSkuService wareSkuService;
 
     /**
+     * 查询sku是否有库存
+     */
+    @PostMapping("/hasstock")
+    public R getSkusHasStock(@RequestBody List<Long> skuIds){
+        List<SkuHasStockTo> vos = wareSkuService.getSkusHasStock(skuIds);
+
+
+        return R.ok().put("data",vos);
+    }
+
+    /**
      * 列表
+     * 存在动态查询条件
+     * skuId： 1
+     * wareId： 2
      */
     @RequestMapping("/list")
     //@RequiresPermissions("ware:waresku:list")
@@ -41,6 +53,17 @@ public class WareSkuController {
 
         return R.ok().put("page", page);
     }
+
+//    /**
+//     * 列表
+//     */
+//    @RequestMapping("/list")
+//    //@RequiresPermissions("ware:waresku:list")
+//    public R list(@RequestParam Map<String, Object> params){
+//        PageUtils page = wareSkuService.queryPage(params);
+//
+//        return R.ok().put("page", page);
+//    }
 
 
     /**
@@ -55,6 +78,8 @@ public class WareSkuController {
     }
 
     /**
+     * TODO 保存应该判断是否相同仓库已经有本次要添加库存的商品了
+     *  如果有只将库存加进去，不用创建新的库存信息
      * 保存
      */
     @RequestMapping("/save")

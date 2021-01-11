@@ -50,11 +50,13 @@
 	</properties>
 
 	<dependencies>
-		<!--<dependency>
+		<!--自定义公共依赖-->
+		<dependency>
 			<groupId>com.zwx.gulimall</groupId>
 			<artifactId>gulimall-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>-->
+		</dependency>
+
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>

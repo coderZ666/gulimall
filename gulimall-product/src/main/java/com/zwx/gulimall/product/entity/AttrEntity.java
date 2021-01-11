@@ -1,5 +1,6 @@
 package com.zwx.gulimall.product.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -41,6 +42,10 @@ public class AttrEntity implements Serializable {
 	 */
 	private String valueSelect;
 	/**
+	 * 可选值类型[0 - 单选，1 - 多选]
+	 */
+	private Integer valueType;
+	/**
 	 * 属性类型[0-销售属性，1-基本属性，2-既是销售属性又是基本属性]
 	 */
 	private Integer attrType;
@@ -56,5 +61,11 @@ public class AttrEntity implements Serializable {
 	 * 快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整
 	 */
 	private Integer showDesc;
+
+//	/**
+//	 * 属性所属分组id
+//	 */
+//	@TableField(exist = false)
+//	private Long attrGroupId;
 
 }

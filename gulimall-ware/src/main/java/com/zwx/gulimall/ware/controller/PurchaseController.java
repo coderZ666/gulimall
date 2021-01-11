@@ -1,21 +1,22 @@
 package com.zwx.gulimall.ware.controller;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.zwx.common.constant.WareConstant;
+import com.zwx.gulimall.ware.vo.MergeVo;
+import com.zwx.gulimall.ware.vo.PurchaseDoneVo;
+import org.springframework.web.bind.annotation.*;
 
 import com.zwx.gulimall.ware.entity.PurchaseEntity;
 import com.zwx.gulimall.ware.service.PurchaseService;
 import com.zwx.common.utils.PageUtils;
 import com.zwx.common.utils.R;
 
+import javax.annotation.Resource;
 
 
 /**
@@ -28,8 +29,62 @@ import com.zwx.common.utils.R;
 @RestController
 @RequestMapping("ware/purchase")
 public class PurchaseController {
-    @Autowired
+    @Resource
     private PurchaseService purchaseService;
+
+    /**
+     * 采购完成
+     * /ware/purchase/done
+     */
+    @PostMapping("/done")
+    public R finish(@RequestBody PurchaseDoneVo doneVo){
+
+        purchaseService.done(doneVo);
+
+        return R.ok();
+    }
+
+    /**
+     * 领取采购单
+     * @param ids 要领取的采购单id集合
+     * @return 领取结果信息
+     */
+    @PostMapping("/received")
+    public R received(@RequestBody List<Long> ids){
+
+        purchaseService.received(ids);
+
+        return R.ok();
+    }
+
+    /**
+     * 合并采购单
+     * 如果选择了采购单，则将采购需求集合放入选择的采购单
+     * 如果没选择采购单，则将采购需求集合放入一个新建采购单
+     * /ware/purchase/merge
+     * {
+     *   purchaseId: 1, //整单id
+     *   items:[1,2,3,4] //合并项集合
+     * }
+     */
+    @PostMapping("/merge")
+    public R unReceiveList(@RequestBody MergeVo mergeVo){
+        purchaseService.mergePurchase(mergeVo);
+
+        return R.ok();
+    }
+
+    /**
+     * 查询未领取的采购单
+     * /ware/purchase/unreceive/list
+     */
+    @RequestMapping("/unreceive/list")
+    //@RequiresPermissions("ware:purchase:list")
+    public R unReceiveList(@RequestParam Map<String, Object> params){
+        PageUtils page = purchaseService.queryUnReceivePage(params);
+
+        return R.ok().put("page", page);
+    }
 
     /**
      * 列表
@@ -60,7 +115,10 @@ public class PurchaseController {
     @RequestMapping("/save")
     //@RequiresPermissions("ware:purchase:save")
     public R save(@RequestBody PurchaseEntity purchase){
-		purchaseService.save(purchase);
+
+		purchase.setCreateTime(new Date());
+		purchase.setUpdateTime(new Date());
+        purchaseService.save(purchase);
 
         return R.ok();
     }

@@ -1,0 +1,9 @@
+server:
+  port: 12000
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.0.104:8848
+  application:
+    name: gulimall-search

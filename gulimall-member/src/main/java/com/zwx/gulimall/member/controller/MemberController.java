@@ -4,18 +4,16 @@ import java.util.Arrays;
 import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
+import com.zwx.gulimall.member.feign.CouponFeignService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.zwx.gulimall.member.entity.MemberEntity;
 import com.zwx.gulimall.member.service.MemberService;
 import com.zwx.common.utils.PageUtils;
 import com.zwx.common.utils.R;
 
+import javax.annotation.Resource;
 
 
 /**
@@ -30,6 +28,20 @@ import com.zwx.common.utils.R;
 public class MemberController {
     @Autowired
     private MemberService memberService;
+
+    @Resource
+    CouponFeignService couponFeignService;
+
+    /**
+     * 测试方法，假装会员服务调用远程优惠券服务返回优惠券
+     */
+    @GetMapping("/coupons")
+    public R test(){
+        MemberEntity memberEntity = new MemberEntity();
+        memberEntity.setNickname("张三");
+        R memberCoupons = couponFeignService.memberCoupons();
+        return R.ok().put("member",memberEntity).put("coupons",memberCoupons.get("coupons"));
+    }
 
     /**
      * 列表
